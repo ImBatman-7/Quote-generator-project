@@ -5,13 +5,27 @@ const quoteText = document.getElementById("quote");
 const authorText = document.getElementById("author");
 const twitterBtn = document.getElementById("twitter");
 const NextQuote = document.getElementById("next-quote");
+const loader = document.getElementById("loader");
 
 let apiQuotes = [] 
+
+//loading icon show
+function loading(){
+    loader.hidden = false;
+    quoteContainer.hidden = true;
+
+}
+
+//finished loading
+function finishedLoading(){
+    loader.hidden = true;
+    quoteContainer.hidden = false;
+}
 
 // rendering quote
 function newQuote(){
     const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
-
+    
     // checking if the author is unlnown or not
     if (!quote.author) {
      authorText.textContent = 'Anonymous';
@@ -26,14 +40,16 @@ function newQuote(){
         quoteText.classList.remove('long-quote')
     }
     quoteText.textContent = quote.text;
+    finishedLoading();
 };
 
 // fetching data from the api
 async function getQuotes(){
+    loading();
     const apiUrl = 'https://type.fit/api/quotes';
     try{
         const response = await fetch(apiUrl);
-        apiQuotes = await response.json()
+        apiQuotes = await response.json();
         newQuote();
     }
     catch(error){
